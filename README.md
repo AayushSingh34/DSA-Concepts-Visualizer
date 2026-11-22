@@ -10,17 +10,23 @@ An interactive, full-stack **Data Structures & Algorithms (DSA) Visualizer** whe
 
 ## ✨ Key Features
 
-* **15+ Interactive DSA Visualizations:**
-  * **Arrays (Sorting):** Bubble Sort, Selection Sort, Merge Sort, and Quick Sort.
-  * **Linked Lists (Box Representation):** Singly, Doubly, Circular, and Doubly Circular Linked Lists with `[PREV | DATA | NEXT]` compartments, simulated memory addresses (`0x100`), `HEAD`/`TAIL` pointers, and loop-back arrows.
-  * **Queues:** Linear Queue (FIFO), Circular Queue (Ring Buffer), Priority Queue (Max-Heap), and Deque (Double-Ended).
-  * **Trees:** Complete Binary Tree (Pre-Order Traversal) and Dynamic Binary Search Tree (In-Order Traversal).
-  * **Graphs:** Breadth-First Search (BFS) with live Queue and Visited tracking.
-* **Custom User Input:** Test your own datasets (up to **20 elements**) and watch the C++ engine process them live.
-* **Full Playback Controls:** Play, Pause, Step Forward (`▶`), Step Back (`◀`), and adjustable animation speed slider.
-* **Built-in Concept & Complexity Guide:** Toggleable navbar panel detailing how each algorithm works, its **Time Complexity**, **Space Complexity**, and real-world use cases.
-* **Final Result Banner:** Displays the final sorted array, traversal order, or pointer chain upon completion.
-* **Dark & Light Mode:** Seamless theme switching across the UI and all SVG diagrams.
+### 🧩 15+ Interactive DSA Visualizations
+
+| Category | Supported Algorithms & Data Structures | Visual Highlights |
+| :--- | :--- | :--- |
+| **Arrays (Sorting)** | Bubble Sort, Selection Sort, Merge Sort, Quick Sort | Live comparison, swap, and sorted-partition bar highlights. |
+| **Linked Lists** | Singly, Doubly, Circular, Doubly Circular | Box representation (`[PREV \| DATA \| NEXT]`), simulated memory addresses (`0x100`), `HEAD`/`TAIL` pointers, and loop-back arrows. |
+| **Queues** | Linear (FIFO), Circular (Ring Buffer), Priority (Max-Heap), Deque | Real-time `front` and `rear` pointer updates with enqueue/dequeue animations. |
+| **Trees** | Complete Binary Tree, Dynamic Binary Search Tree (BST) | Dynamic `(x, y)` node layout with **Pre-Order** and **In-Order** traversal animations. |
+| **Graphs** | Breadth-First Search (BFS) | Live **Queue** and **Visited** state tracking across graph nodes. |
+
+### 🎮 Interactive Controls & Learning Tools
+* **Custom User Input:** Test your own datasets (up to **20 elements**) and watch the native C++ engine process them live.
+* **Full Playback Controls:** Play, Pause, Step Forward (`▶`), Step Back (`◀`), and adjust animation speed on the fly with a speed slider.
+* **Built-In Concept & Complexity Guide:** Toggleable navbar panel detailing algorithm mechanics, **Time Complexity**, **Space Complexity**, and real-world use cases.
+* **Final Result Banner:** Automatically displays the final sorted array, traversal sequence, or pointer chain upon completion.
+* **Dark & Light Mode:** Seamless theme switching across the entire UI and all dynamic SVG diagrams.
+
 
 ---
 
@@ -116,25 +122,6 @@ flowchart LR
 
 > [!TIP]
 > Once the server starts, open **`http://localhost:8080`** in your browser to launch the DSA Visualizer.
-
-## 📸 Demo & Screenshots
-
-### 🎬 Live Playback Demo
-![DSA Visualizer Live Demo](assets/demo.gif)
-*Real-time C++ execution trace visualized with step-by-step playback controls.*
-
-### 🖥️ Interface Gallery
-
-| Sorting & Array Bars | Binary Search Tree (BST) |
-| :---: | :---: |
-| ![Sorting Visualizer](assets/sorting.png) | ![BST Visualizer](assets/tree.png) |
-| **Quick Sort** with live comparison & swap highlights | **BST Insertion & Traversal** with dynamic `(x, y)` node layout |
-
-| Doubly Circular Linked List | Dark Mode & Complexity Drawer |
-| :---: | :---: |
-| ![Linked List Visualizer](assets/linked-list.png) | ![Concept and Complexity](assets/dark-mode.png) |
-| Pointer-level node traversal & insertion | Built-in **Time/Space Complexity** notes & theme toggle |
-
 
 ## 🎮 How to Use
 
