@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>C++ Full DSA Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" };
+    </script>
+    <style>
+      .bar-transition {
+        transition:
+          height 0.35s ease,
+          background-color 0.25s ease;
+      }
+      circle,
+      rect {
+        transition: all 0.35s ease;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 font-sans"
+  >
+    <!-- Top Navbar -->
+    <nav
+      class="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-5 py-3"
+    >
+      <div
+        class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3"
+      >
+        <div>
+          <h1 class="text-xl font-bold text-cyan-600 dark:text-cyan-400">
+            C++ DSA Concepts Visualizer
+          </h1>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">
+            Arrays • Graphs • Trees • Linked Lists • Queues
+          </p>
+        </div>
+
+        <!-- Main Category Tabs -->
+        <div
+          class="flex flex-wrap bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 gap-1"
+        >
+          <button
+            id="cat-sort"
+            onclick="selectCategory('sort')"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium transition"
+          >
+            Array
+          </button>
+          <button
+            id="cat-bfs"
+            onclick="selectCategory('bfs')"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium transition"
+          >
+            Graph
+          </button>
+          <button
+            id="cat-tree"
+            onclick="selectCategory('tree')"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium transition"
+          >
+            Tree
+          </button>
+          <button
+            id="cat-ll"
+            onclick="selectCategory('ll')"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium transition"
+          >
+            Linked List
+          </button>
+          <button
+            id="cat-queue"
+            onclick="selectCategory('queue')"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium transition"
+          >
+            Queue
+          </button>
+        </div>
+
+        <!-- Navbar Utility Controls: Concept Guide & Theme Toggle -->
+        <div class="flex items-center gap-2">
+          <button
+            id="conceptBtn"
+            onclick="toggleConceptPanel()"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium border border-cyan-500/40 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 transition"
+          >
+            📖 Concept & Complexity
+          </button>
+          <button
+            id="themeBtn"
+            onclick="toggleTheme()"
+            class="px-3 py-1.5 rounded-lg text-sm font-medium border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+          >
+            ☀️ Light
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-5 space-y-4">
+      <!-- Sub-Type Pills -->
+      <div id="subTabs" class="flex flex-wrap gap-2"></div>
+
+      <!-- Collapsible Concept & Complexity Guide Section -->
+      <section
+        id="conceptPanel"
+        class="hidden bg-white dark:bg-slate-900 border border-cyan-500/40 rounded-xl p-5 shadow-md space-y-4"
+      >
+        <div
+          class="flex justify-between items-start gap-4 border-b border-slate-200 dark:border-slate-800 pb-3"
+        >
+          <div>
+            <span
+              class="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400"
+              >Concept & Complexity Guide</span
+            >
+            <h2 id="conceptTitle" class="text-xl font-bold mt-0.5"></h2>
+          </div>
+          <button
+            onclick="toggleConceptPanel()"
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-sm font-bold px-2 py-1"
+          >
+            ✕
+          </button>
+        </div>
+        <p
+          id="conceptDesc"
+          class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"
+        ></p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div
+            class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-3.5"
+          >
+            <div
+              class="text-xs font-bold uppercase text-amber-600 dark:text-amber-400 mb-1.5"
+            >
+              ⏱ Time Complexity
+            </div>
+            <div
+              id="conceptTime"
+              class="text-xs font-mono space-y-1 text-slate-700 dark:text-slate-300"
+            ></div>
+          </div>
+          <div
+            class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-3.5"
+          >
+            <div
+              class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400 mb-1.5"
+            >
+              💾 Space Complexity
+            </div>
+            <div
+              id="conceptSpace"
+              class="text-xs font-mono text-slate-700 dark:text-slate-300"
+            ></div>
+          </div>
+          <div
+            class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-3.5"
+          >
+            <div
+              class="text-xs font-bold uppercase text-emerald-600 dark:text-emerald-400 mb-1.5"
+            >
+              💡 Real-World Use
+            </div>
+            <div
+              id="conceptUse"
+              class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed"
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Custom Input & Playback Controls -->
+      <div
+        class="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-sm"
+      >
+        <div class="flex items-center gap-2 flex-1 min-w-[260px]">
+          <label
+            id="inputLabel"
+            class="text-xs font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap"
+            >Input:</label
+          >
+          <input
+            id="userInput"
+            type="text"
+            class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-sm text-cyan-700 dark:text-cyan-300 focus:outline-none focus:border-cyan-500"
+          />
+          <button
+            onclick="loadVisualization()"
+            class="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-semibold whitespace-nowrap"
+          >
+            Run C++
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            onclick="stepBack()"
+            class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-sm"
+          >
+            ◀
+          </button>
+          <button
+            id="playBtn"
+            onclick="togglePlay()"
+            class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold min-w-[75px]"
+          >
+            Pause
+          </button>
+          <button
+            onclick="stepForward()"
+            class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-sm"
+          >
+            ▶
+          </button>
+          <div
+            class="flex items-center gap-2 ml-2 text-xs text-slate-500 dark:text-slate-400"
+          >
+            <span>Speed</span>
+            <input
+              id="speedSlider"
+              type="range"
+              min="150"
+              max="1500"
+              value="650"
+              class="w-20 accent-cyan-500"
+              onchange="updateSpeed()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div
+        class="flex justify-between items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-sm shadow-sm"
+      >
+        <span id="status" class="text-cyan-700 dark:text-cyan-300 font-medium"
+          >Ready</span
+        >
+        <span
+          id="stepCounter"
+          class="text-xs text-slate-500 dark:text-slate-400 font-mono"
+          >Step 0 / 0</span
+        >
+      </div>
+
+      <!-- Visualization Canvas (Scrollable for up to 20 elements) -->
+      <div
+        id="stage"
+        class="h-[380px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-end p-6 relative overflow-x-auto shadow-sm"
+      ></div>
+
+      <!-- Live Extra Info Panel -->
+      <div
+        id="extraPanel"
+        class="hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-700 dark:text-slate-300 font-mono shadow-sm"
+      ></div>
+
+      <!-- Final Result Banner -->
+      <div
+        id="finalResult"
+        class="hidden bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500/60 rounded-xl px-5 py-4 text-sm text-emerald-900 dark:text-emerald-200 shadow-md"
+      ></div>
+    </main>
+
+    <script>
+      const SUBTYPES = {
+        sort: [
+          { id: "bubble", label: "Bubble Sort" },
+          { id: "selection", label: "Selection Sort" },
+          { id: "merge", label: "Merge Sort" },
+          { id: "quick", label: "Quick Sort" }
+        ],
+        
+        bfs: [{ id: "bfs", label: "Graph BFS" }],
+        tree: [
+          { id: "binary", label: "Binary Tree (Pre-Order)" },
+          { id: "bst", label: "BST (In-Order)" },
+        ],
+        ll: [
+          { id: "singly", label: "Singly Linked List" },
+          { id: "doubly", label: "Doubly Linked List" },
+          { id: "circular", label: "Circular Linked List" },
+          { id: "dcircular", label: "Doubly Circular Linked List" },
+        ],
+        queue: [
+          { id: "linear", label: "Linear Queue" },
+          { id: "circular", label: "Circular Queue" },
+          { id: "priority", label: "Priority Queue (Max)" },
+          { id: "deque", label: "Deque (Double-Ended)" },
+        ],
+      };
+
+      const CONCEPT_INFO = {
+        selection: {
+          title: "Array — Selection Sort",
+          desc: "Divides the array into a sorted left part and an unsorted right part. On each pass, it finds the minimum element from the unsorted part and swaps it into the next sorted position.",
+          time: "<div>Best: <b>O(n²)</b></div><div>Average: <b>O(n²)</b></div><div>Worst: <b>O(n²)</b></div>",
+          space: "<b>O(1)</b> — In-place sorting.",
+          use: "Situations where memory writes/swaps are expensive (makes at most n-1 swaps)."
+        },
+        merge: {
+          title: "Array — Merge Sort",
+          desc: "A Divide-and-Conquer algorithm that recursively splits the array into halves until single elements remain, then merges those halves back together in sorted order.",
+          time: "<div>Best: <b>O(n log n)</b></div><div>Average: <b>O(n log n)</b></div><div>Worst: <b>O(n log n)</b></div>",
+          space: "<b>O(n)</b> — Requires temporary arrays during merging.",
+          use: "Sorting linked lists, external sorting of huge files, and when stable sorting is required."
+        },
+        quick: {
+          title: "Array — Quick Sort",
+          desc: "A Divide-and-Conquer algorithm that picks a Pivot element, partitions the array so smaller elements move left and larger elements move right, and recursively sorts both sides.",
+          time: "<div>Best / Average: <b>O(n log n)</b></div><div>Worst (already sorted): <b>O(n²)</b></div>",
+          space: "<b>O(log n)</b> — Recursion call stack (in-place).",
+          use: "General-purpose fast in-memory sorting (used in many standard library implementations)."
+        },
+        bfs: {
+          title: "Graph — Breadth-First Search (BFS)",
+          desc: "Explores a graph level by level starting from a source node. It uses a Queue (FIFO) to visit all immediate neighbors before moving deeper to the next level.",
+          time: "<div>Traversal: <b>O(V + E)</b></div><div>V = Vertices, E = Edges</div>",
+          space: "<b>O(V)</b> — Stores the visited array and traversal queue.",
+          use: "Finding the shortest path in unweighted graphs, GPS navigation, social network friend recommendations.",
+        },
+        binary: {
+          title: "Complete Binary Tree (Pre-Order Traversal)",
+          desc: "A hierarchical tree where every node has at most two children (left and right), filled level by level from left to right. Pre-Order visits Root → Left → Right.",
+          time: "<div>Traversal: <b>O(n)</b></div><div>Search: <b>O(n)</b></div><div>Insert (level-order): <b>O(n)</b></div>",
+          space:
+            "<b>O(n)</b> storage | <b>O(h)</b> recursion stack (h = height).",
+          use: "Expression trees, file system hierarchies, and building Binary Heaps.",
+        },
+        bst: {
+          title: "Binary Search Tree (In-Order Traversal)",
+          desc: "A sorted binary tree where every left child is smaller than its parent and every right child is larger. In-Order traversal (Left → Root → Right) always produces elements in sorted ascending order.",
+          time: "<div>Search / Insert / Delete:</div><div>Average: <b>O(log n)</b></div><div>Worst (skewed): <b>O(n)</b></div>",
+          space: "<b>O(n)</b> storage | <b>O(h)</b> recursion stack.",
+          use: "Database indexing, autocomplete dictionaries, and maintaining dynamically sorted data.",
+        },
+        singly: {
+          title: "Singly Linked List",
+          desc: "A linear chain of nodes where each node holds DATA and a NEXT pointer to the following node. Traversal is one-way from HEAD to NULL.",
+          time: "<div>Insert/Delete at Head: <b>O(1)</b></div><div>Search / Access: <b>O(n)</b></div><div>Insert at Tail: <b>O(1)</b> (with tail ptr)</div>",
+          space: "<b>O(n)</b> — One pointer per node.",
+          use: "Implementing stacks, queues, dynamic memory allocation, and hash table chaining.",
+        },
+        doubly: {
+          title: "Doubly Linked List",
+          desc: "Each node contains PREV, DATA, and NEXT fields, allowing traversal both forward and backward.",
+          time: "<div>Insert/Delete at Head or Tail: <b>O(1)</b></div><div>Delete given node: <b>O(1)</b></div><div>Search: <b>O(n)</b></div>",
+          space: "<b>O(n)</b> — Two pointers (prev & next) per node.",
+          use: "Browser Back/Forward history, Undo/Redo in editors, and LRU Caches.",
+        },
+        circular: {
+          title: "Circular Singly Linked List",
+          desc: "Similar to a Singly Linked List, except the last node's NEXT pointer loops back to the HEAD instead of NULL, forming a continuous ring.",
+          time: "<div>Insert at Head/Tail: <b>O(1)</b> (with tail ptr)</div><div>Search / Traversal: <b>O(n)</b></div>",
+          space: "<b>O(n)</b> — One pointer per node.",
+          use: "OS Round-Robin CPU scheduling, multiplayer turn-based games, and circular buffers.",
+        },
+        dcircular: {
+          title: "Doubly Circular Linked List",
+          desc: "Combines Doubly and Circular lists: TAIL.next points to HEAD and HEAD.prev points to TAIL, enabling infinite bidirectional traversal.",
+          time: "<div>Insert/Delete at Head or Tail: <b>O(1)</b></div><div>Search: <b>O(n)</b></div>",
+          space: "<b>O(n)</b> — Two pointers per node.",
+          use: "Music/video playlists with Repeat All & Next/Previous, and OS task managers.",
+        },
+        linear: {
+          title: "Linear Queue (FIFO)",
+          desc: "First-In, First-Out structure where elements are added at REAR (Enqueue) and removed from FRONT (Dequeue). In fixed arrays, dequeued slots at the front cannot be reused without shifting.",
+          time: "<div>Enqueue: <b>O(1)</b></div><div>Dequeue: <b>O(1)</b></div><div>Search: <b>O(n)</b></div>",
+          space: "<b>O(n)</b>",
+          use: "Printer job queues, call center hold systems, and BFS graph traversal.",
+        },
+        circular_q: {
+          title: "Circular Queue (Ring Buffer)",
+          desc: "Connects the last slot back to the first slot using modulo arithmetic ((rear + 1) % capacity), efficiently reusing empty spaces left by Dequeue operations.",
+          time: "<div>Enqueue: <b>O(1)</b></div><div>Dequeue: <b>O(1)</b></div><div>Peek: <b>O(1)</b></div>",
+          space: "<b>O(k)</b> — Fixed capacity k.",
+          use: "Audio/video streaming buffers, keyboard input buffers, and network packet queues.",
+        },
+        priority: {
+          title: "Priority Queue (Max-Heap)",
+          desc: "Every element has a priority (here, larger number = higher priority). Instead of FIFO, the highest-priority element is always served first using a Binary Heap.",
+          time: "<div>Push (Insert): <b>O(log n)</b></div><div>Pop (Extract Max): <b>O(log n)</b></div><div>Peek Top: <b>O(1)</b></div>",
+          space: "<b>O(n)</b>",
+          use: "Dijkstra's shortest path algorithm, hospital ER triage, and OS process scheduling.",
+        },
+        deque: {
+          title: "Deque (Double-Ended Queue)",
+          desc: "A generalized queue that supports fast insertion and deletion from BOTH the Front and the Rear ends.",
+          time: "<div>Push/Pop Front: <b>O(1)</b></div><div>Push/Pop Back: <b>O(1)</b></div><div>Search: <b>O(n)</b></div>",
+          space: "<b>O(n)</b>",
+          use: "Sliding window algorithms, palindrome checkers, and work-stealing thread schedulers.",
+        },
+      };
+
+      let category = "ll",
+        subType = "singly";
+      let steps = [],
+        treeData = null,
+        currentStep = 0,
+        isPlaying = false,
+        timer = null;
+
+      const stage = document.getElementById("stage");
+      const statusEl = document.getElementById("status");
+      const stepCounter = document.getElementById("stepCounter");
+      const extraPanel = document.getElementById("extraPanel");
+      const finalResult = document.getElementById("finalResult");
+      const userInput = document.getElementById("userInput");
+      const inputLabel = document.getElementById("inputLabel");
+      const playBtn = document.getElementById("playBtn");
+      const subTabs = document.getElementById("subTabs");
+      const conceptPanel = document.getElementById("conceptPanel");
+      const themeBtn = document.getElementById("themeBtn");
+
+      function isDark() {
+        return document.documentElement.classList.contains("dark");
+      }
+
+      function toggleTheme() {
+        document.documentElement.classList.toggle("dark");
+        themeBtn.textContent = isDark() ? "☀️ Light" : "🌙 Dark";
+        renderStep();
+      }
+
+      function toggleConceptPanel() {
+        conceptPanel.classList.toggle("hidden");
+        updateConceptPanel();
+      }
+
+      function updateConceptPanel() {
+        const key =
+          category === "queue" && subType === "circular"
+            ? "circular_q"
+            : subType;
+        const info = CONCEPT_INFO[key];
+        if (!info) return;
+        document.getElementById("conceptTitle").textContent = info.title;
+        document.getElementById("conceptDesc").textContent = info.desc;
+        document.getElementById("conceptTime").innerHTML = info.time;
+        document.getElementById("conceptSpace").innerHTML = info.space;
+        document.getElementById("conceptUse").textContent = info.use;
+      }
+
+      function selectCategory(cat) {
+        category = cat;
+        subType = SUBTYPES[cat][0].id;
+        ["sort", "bfs", "tree", "ll", "queue"].forEach((c) => {
+          document.getElementById("cat-" + c).className =
+            c === cat
+              ? "px-3 py-1.5 rounded-lg text-sm font-medium bg-cyan-600 text-white"
+              : "px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+        });
+        renderSubTabs();
+        updateConceptPanel();
+        setDefaultInput();
+        loadVisualization();
+      }
+
+      function renderSubTabs() {
+        subTabs.innerHTML = SUBTYPES[category]
+          .map(
+            (s) => `
+        <button onclick="selectSubType('${s.id}')"
+          class="px-3 py-1 rounded-full text-xs font-medium border transition ${
+            s.id === subType
+              ? "bg-cyan-500/20 border-cyan-500 text-cyan-700 dark:text-cyan-300"
+              : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          }">${s.label}</button>`,
+          )
+          .join("");
+      }
+      function selectSubType(st) {
+        subType = st;
+        renderSubTabs();
+        updateConceptPanel();
+        loadVisualization();
+      }
+      function setDefaultInput() {
+        if (category === "sort") {
+          inputLabel.textContent = "Array (max 20):";
+          userInput.value = "45, 18, 72, 30, 90, 12, 55";
+        }
+        if (category === "bfs") {
+          inputLabel.textContent = "Start Node (0-5):";
+          userInput.value = "0";
+        }
+        if (category === "tree") {
+          inputLabel.textContent = "Tree Values (max 20):";
+          userInput.value = "50, 30, 70, 20, 40, 60, 80";
+        }
+        if (category === "ll") {
+          inputLabel.textContent = "Nodes (max 20):";
+          userInput.value = "10, 20, 30, 40, 50";
+        }
+        if (category === "queue") {
+          inputLabel.textContent = "Values (max 20):";
+          userInput.value = "15, 40, 10, 60, 25";
+        }
+      }
+      async function loadVisualization() {
+        pause();
+        const raw = userInput.value.replace(/\s+/g, "");
+        currentStep = 0;
+        extraPanel.classList.add("hidden");
+        finalResult.classList.add("hidden");
+        if (category === "sort")
+          steps = await (await fetch(`/api/sort?type=${subType}&data=${raw}`)).json();
+        if (category === "bfs")
+          steps = await (await fetch(`/api/bfs?start=${raw}`)).json();
+        if (category === "ll")
+          steps = await (
+            await fetch(`/api/ll?type=${subType}&data=${raw}`)
+          ).json();
+        if (category === "queue")
+          steps = await (
+            await fetch(`/api/queue?type=${subType}&data=${raw}`)
+          ).json();
+        if (category === "tree") {
+          treeData = await (
+            await fetch(`/api/tree?type=${subType}&data=${raw}`)
+          ).json();
+          steps = treeData.order;
+        }
+        renderStep();
+        play();
+      }
+      function showFinalResult() {
+        let title = "Final Result",
+          output = "";
+        if (category === "sort") {
+          title = "Final Sorted Array";
+          output = `[ ${steps[steps.length - 1].array.join(", ")} ]`;
+        } else if (category === "bfs") {
+          title = "Final BFS Traversal Order";
+          output = steps[steps.length - 1].visited.join(" → ");
+        } else if (category === "tree") {
+          title =
+            subType === "bst"
+              ? "Final BST In-Order (Sorted Result)"
+              : "Final Binary Tree Pre-Order Result";
+          output = `[ ${steps.join(" → ")} ]`;
+        } else if (category === "ll") {
+          const nodes = steps[steps.length - 1].nodes;
+          title = `Final ${subType.toUpperCase()} Linked List`;
+          if (subType === "singly")
+            output = `HEAD → [ ${nodes.join(" ] → [ ")} ] → NULL`;
+          if (subType === "doubly")
+            output = `NULL ⇄ [ ${nodes.join(" ] ⇄ [ ")} ] ⇄ NULL`;
+          if (subType === "circular")
+            output = `HEAD → [ ${nodes.join(" ] → [ ")} ] ↺ (loops back to HEAD: ${nodes[0]})`;
+          if (subType === "dcircular")
+            output = `HEAD ⇄ [ ${nodes.join(" ] ⇄ [ ")} ] ↺ (HEAD & TAIL linked bidirectionally)`;
+        } else if (category === "queue") {
+          const last = steps[steps.length - 1];
+          const activeItems = last.items.filter((x) => x !== -1);
+          title = `Final ${subType.toUpperCase()} Queue State`;
+          if (subType === "linear")
+            output = "All elements dequeued in FIFO order. Queue is now empty.";
+          else if (subType === "circular") {
+            const slots = last.items
+              .map((v, i) => `Slot ${i}: ${v === -1 ? "Empty" : v}`)
+              .join(" | ");
+            output = `${slots}  (Front: Slot ${last.front}, Rear: Slot${last.rear})`;
+          } else if (subType === "priority")
+            output =
+              "All elements popped in Descending Priority (Max-Heap) order.";
+          else if (subType === "deque")
+            output = activeItems.length
+              ? `Remaining Deque: [ ${activeItems.join(", ")} ]`
+              : "Deque is now empty.";
+        }
+
+        finalResult.innerHTML = `<div class="text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold mb-1">✓ ${title}</div>
+                               <div class="font-mono text-base font-semibold break-words">${output}</div>`;
+        finalResult.classList.remove("hidden");
+      }
+      function renderStep() {
+        if (!steps.length) return;
+        stepCounter.textContent = `Step ${currentStep + 1} / ${steps.length}`;
+        if (currentStep === steps.length - 1) showFinalResult();
+        else finalResult.classList.add("hidden");
+        const dark = isDark();
+        const edgeCol = dark ? "#334155" : "#cbd5e1";
+        const idleFill = dark ? "#1e293b" : "#f1f5f9";
+        const idleText = dark ? "#ffffff" : "#0f172a";
+        const nodeStroke = dark ? "#cbd5e1" : "#64748b";
+        if (category === "sort") {
+          const s = steps[currentStep],
+            maxVal = Math.max(...s.array, 10);
+          const label = SUBTYPES.sort.find(x => x.id === subType).label;
+          statusEl.textContent = `[Bubble Sort] ${s.msg}`;
+          stage.innerHTML =
+            `<div class="flex items-end justify-center gap-2 min-w-max mx-auto w-full h-full">` +
+            s.array
+              .map((val, i) => {
+                let color =
+                  i >= (s.sorted && s.sorted.include(i)) ? "bg-emerald-500" : "bg-cyan-500";
+                if (s.compare.includes(i))
+                  color = s.swapped ? "bg-rose-500" : "bg-amber-400";
+                return `<div class="flex flex-col items-center gap-2 w-10 sm:w-12">
+              <span class="text-xs font-mono text-slate-600 dark:text-slate-300">${val}</span>
+              <div class="${color} w-full rounded-t-lg bar-transition" style="height:${Math.max((val / maxVal) * 260, 24)}px"></div>
+            </div>`;
+              })
+              .join("") +
+            `</div>`;
+        } else if (category === "bfs") {
+          const s = steps[currentStep];
+          statusEl.textContent = `[Graph BFS] ${s.msg}`;
+          extraPanel.classList.remove("hidden");
+          extraPanel.innerHTML = `Queue: <span class="text-amber-600 dark:text-amber-400">[ ${s.queue.join(", ")} ]</span> | Visited: <span class="text-indigo-600 dark:text-indigo-400">[ ${s.visited.join(" → ")} ]</span>`;
+          const coords = [
+            { x: 150, y: 180 },
+            { x: 330, y: 80 },
+            { x: 330, y: 280 },
+            { x: 530, y: 60 },
+            { x: 530, y: 180 },
+            { x: 530, y: 300 },
+          ];
+          const edges = [
+            [0, 1],
+            [0, 2],
+            [1, 3],
+            [1, 4],
+            [2, 4],
+            [2, 5],
+            [4, 5],
+          ];
+          let svg = `<svg class="w-full h-full mx-auto" viewBox="0 0 700 350">`;
+          edges.forEach(
+            ([u, v]) =>
+              (svg += `<line x1="${coords[u].x}" y1="${coords[u].y}" x2="${coords[v].x}" y2="${coords[v].y}" stroke="${edgeCol}" stroke-width="3"/>`),
+          );
+          coords.forEach((c, i) => {
+            const colored =
+              s.current === i || s.visited.includes(i) || s.queue.includes(i);
+            const fill =
+              s.current === i
+                ? "#f43f5e"
+                : s.visited.includes(i)
+                  ? "#6366f1"
+                  : s.queue.includes(i)
+                    ? "#f59e0b"
+                    : idleFill;
+            svg += `<circle cx="${c.x}" cy="${c.y}" r="${s.current === i ? 28 : 24}" fill="${fill}" stroke="${nodeStroke}" stroke-width="2"/>
+                  <text x="${c.x}" y="${c.y + 5}" text-anchor="middle" fill="${colored ? "white" : idleText}" font-size="16" font-weight="bold">${i}</text>`;
+          });
+          stage.innerHTML = svg + `</svg>`;
+        } else if (category === "tree") {
+          const visited = steps.slice(0, currentStep + 1),
+            curr = steps[currentStep];
+          statusEl.textContent = `[${subType === "bst" ? "BST In-Order" : "Binary Tree Pre-Order"}] Visiting Node${curr}`;
+          extraPanel.classList.remove("hidden");
+          extraPanel.innerHTML = `Traversal Order: <span class="text-emerald-600 dark:text-emerald-400">[ ${visited.join(" → ")} ]</span>`;
+          let svg = `<svg class="w-full h-full mx-auto" viewBox="0 0 700 340">`;
+          treeData.edges.forEach(
+            (e) =>
+              (svg += `<line x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}" stroke="${edgeCol}" stroke-width="2.5"/>`),
+          );
+          treeData.nodes.forEach((n) => {
+            const colored = n.val === curr || visited.includes(n.val);
+            const fill =
+              n.val === curr
+                ? "#10b981"
+                : visited.includes(n.val)
+                  ? "#047857"
+                  : idleFill;
+            svg += `<circle cx="${n.x}" cy="${n.y}" r="${n.val === curr ? 25 : 21}" fill="${fill}" stroke="${nodeStroke}" stroke-width="2"/>
+                  <text x="${n.x}" y="${n.y + 5}" text-anchor="middle" fill="${colored ? "white" : idleText}" font-size="13" font-weight="bold">${n.val}</text>`;
+          });
+          stage.innerHTML = svg + `</svg>`;
+        } else if (category === "ll") {
+          const s = steps[currentStep],
+            nodes = s.nodes;
+          const isDoubly = subType === "doubly" || subType === "dcircular";
+          const isCircular = subType === "circular" || subType === "dcircular";
+          statusEl.textContent = `[Linked List] ${s.msg}`;
+
+          const boxW = isDoubly ? 116 : 96,
+            boxH = 54,
+            gap = isDoubly ? 150 : 136,
+            startX = 45,
+            y = 140;
+          const svgW = Math.max(960, nodes.length * gap + 100);
+          const outerFill = dark ? "#0f172a" : "#e2e8f0";
+          const subLbl = dark ? "#94a3b8" : "#475569";
+
+          let svg = `<svg style="min-width:${svgW}px; height:100\%" class="mx-auto" viewBox="0 0 ${svgW} 330">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#0284c7"/>
+            </marker>
+            <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#d97706"/>
+            </marker>
+          </defs>`;
+
+          nodes.forEach((val, i) => {
+            const x = startX + i * gap,
+              active = i === s.active;
+            const stroke = active ? "#0284c7" : "#64748b";
+            const dataBg = active ? "#0284c7" : idleFill;
+            const dataTxt = active ? "#ffffff" : idleText;
+            const addr = "0x" + (0x100 + i * 4).toString(16).toUpperCase();
+
+            svg += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="6" fill="${outerFill}" stroke="${stroke}" stroke-width="2.5"/>`;
+
+            if (isDoubly) {
+              svg += `<rect x="${x + 28}" y="${y}" width="60" height="${boxH}" fill="${dataBg}" stroke="${stroke}" stroke-width="1.5"/>`;
+              svg += `<text x="${x + 14}" y="${y + 13}" text-anchor="middle" fill="${subLbl}" font-size="8" font-family="monospace">PREV</text>`;
+              svg += `<text x="${x + 58}" y="${y + 13}" text-anchor="middle" fill="${active ? "#e0f2fe" : subLbl}" font-size="8" font-family="monospace">DATA</text>`;
+              svg += `<text x="${x + 102}" y="${y + 13}" text-anchor="middle" fill="${subLbl}" font-size="8" font-family="monospace">NEXT</text>`;
+              svg += `<text x="${x + 58}" y="${y + 39}" text-anchor="middle" fill="${dataTxt}" font-size="16" font-weight="bold">${val}</text>`;
+              svg += `<text x="${x + 14}" y="${y + 38}" text-anchor="middle" fill="${i === 0 && !isCircular ? "#ef4444" : "#d97706"}" font-size="13" font-weight="bold">${i === 0 && !isCircular ? "∅" : "•"}</text>`;
+              svg += `<text x="${x + 102}" y="${y + 38}" text-anchor="middle" fill="${i === nodes.length - 1 && !isCircular ? "#ef4444" : "#0284c7"}" font-size="13" font-weight="bold">${i === nodes.length - 1 && !isCircular ? "∅" : "•"}</text>`;
+            } else {
+              svg += `<rect x="${x}" y="${y}" width="62" height="${boxH}" rx="4" fill="${dataBg}" stroke="${stroke}" stroke-width="1.5"/>`;
+              svg += `<text x="${x + 31}" y="${y + 13}" text-anchor="middle" fill="${active ? "#e0f2fe" : subLbl}" font-size="8" font-family="monospace">DATA</text>`;
+              svg += `<text x="${x + 79}" y="${y + 13}" text-anchor="middle" fill="${subLbl}" font-size="8" font-family="monospace">NEXT</text>`;
+              svg += `<text x="${x + 31}" y="${y + 39}" text-anchor="middle" fill="${dataTxt}" font-size="16" font-weight="bold">${val}</text>`;
+              svg += `<text x="${x + 79}" y="${y + 38}" text-anchor="middle" fill="${i === nodes.length - 1 && !isCircular ? "#ef4444" : "#0284c7"}" font-size="13" font-weight="bold">${i === nodes.length - 1 && !isCircular ? "∅" : "•"}</text>`;
+            }
+
+            svg += `<text x="${x + boxW / 2}" y="${y + boxH + 16}" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">${addr}</text>`;
+            if (i === 0)
+              svg += `<text x="${x + boxW / 2}" y="${y - 12}" text-anchor="middle" fill="#10b981" font-size="12" font-weight="bold">HEAD</text>`;
+            if (i === nodes.length - 1)
+              svg += `<text x="${x + boxW / 2}" y="${y + boxH + 32}" text-anchor="middle" fill="#ec4899" font-size="12" font-weight="bold">TAIL</text>`;
+
+            if (i < nodes.length - 1) {
+              const nextX = startX + (i + 1) * gap,
+                fwdY = isDoubly ? y + 20 : y + 32;
+              svg += `<line x1="${x + boxW}" y1="${fwdY}" x2="${nextX - 4}" y2="${fwdY}" stroke="#0284c7" stroke-width="2.5" marker-end="url(#arrow)"/>`;
+              if (isDoubly)
+                svg += `<line x1="${nextX}" y1="${y + 40}" x2="${x + boxW + 4}" y2="${y + 40}" stroke="#d97706" stroke-width="2.5" marker-end="url(#arrowAmber)"/>`;
+            }
+          });
+
+          if (isCircular && nodes.length > 0) {
+            const firstX = startX + boxW / 2,
+              lastNextX = startX + (nodes.length - 1) * gap + boxW - 14;
+            svg += `<path d="M ${lastNextX}${y + boxH} C ${lastNextX}${y + boxH + 100}, ${firstX}${y + boxH + 100}, ${firstX}${y + boxH + 4}" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrow)"/>`;
+            if (subType === "dcircular") {
+              const firstPrevX = startX + 14,
+                lastX = startX + (nodes.length - 1) * gap + boxW / 2;
+              svg += `<path d="M ${firstPrevX}${y} C ${firstPrevX}${y - 95}, ${lastX}${y - 95}, ${lastX}${y - 4}" fill="none" stroke="#d97706" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#arrowAmber)"/>`;
+            }
+          }
+          stage.innerHTML = svg + `</svg>`;
+        } else if (category === "queue") {
+          const s = steps[currentStep],
+            items = s.items;
+          statusEl.textContent = `[${subType.toUpperCase()} QUEUE]${s.msg}`;
+
+          if (subType === "circular") {
+            const cx = 350,
+              cy = 175,
+              n = items.length;
+            const r = n > 10 ? 132 : 115;
+            const nodeR = n > 10 ? 17 : 28;
+            const fontSize = n > 10 ? 11 : 14;
+            const labelOffset = n > 10 ? 28 : 42;
+
+            let svg = `<svg class="w-full h-full mx-auto" viewBox="0 0 700 350">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${edgeCol}" stroke-width="3" stroke-dasharray="6,6"/>`;
+            items.forEach((val, i) => {
+              const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+              const x = cx + r * Math.cos(angle),
+                y = cy + r * Math.sin(angle);
+              const isF = i === s.front,
+                isR = i === s.rear;
+              const fill =
+                val === -1
+                  ? idleFill
+                  : isF
+                    ? "#10b981"
+                    : isR
+                      ? "#f43f5e"
+                      : "#0284c7";
+              svg += `<circle cx="${x}" cy="${y}" r="${nodeR}" fill="${fill}" stroke="${nodeStroke}" stroke-width="2"/>
+                    <text x="${x}" y="${y + 4}" text-anchor="middle" fill="${val === -1 ? idleText : "white"}" font-size="${fontSize}" font-weight="bold">${val === -1 ? "-" : val}</text>
+                    <text x="${x}" y="${y + labelOffset}" text-anchor="middle" fill="#64748b" font-size="10">${i}${isF ? "(F)" : ""}${isR ? "(R)" : ""}</text>`;
+            });
+            stage.innerHTML = svg + `</svg>`;
+          } else {
+            stage.innerHTML =
+              `<div class="flex items-center justify-center gap-3 min-w-max mx-auto h-full px-4">` +
+              items
+                .map((val, i) => {
+                  const isEmpty = val === -1,
+                    isF = i === s.front,
+                    isR = i === s.rear;
+                  return `<div class="flex flex-col items-center gap-2">
+                <span class="text-xs font-bold h-4 ${isF ? "text-emerald-600 dark:text-emerald-400" : "text-transparent"}">FRONT</span>
+                <div class="w-16 h-16 rounded-xl border-2 flex items-center justify-center text-lg font-bold transition-all ${isEmpty ? "bg-slate-100 dark:bg-slate-950 border-slate-300 dark:border-slate-800 text-slate-400 dark:text-slate-700" : isF ? "bg-emerald-500/20 border-emerald-500 text-emerald-900 dark:text-white" : "bg-cyan-500/20 border-cyan-500 text-cyan-900 dark:text-white"}">${isEmpty ? "×" : val}</div>
+                <span class="text-xs font-bold h-4 ${isR ? "text-rose-600 dark:text-rose-400" : "text-transparent"}">REAR</span>
+              </div>`;
+                })
+                .join("") +
+              `</div>`;
+          }
+        }
+      }
+
+      function play() {
+        if (isPlaying) return;
+        isPlaying = true;
+        playBtn.textContent = "Pause";
+        const delay =
+          1650 - Number(document.getElementById("speedSlider").value);
+        timer = setInterval(() => {
+          if (currentStep < steps.length - 1) {
+            currentStep++;
+            renderStep();
+          } else pause();
+        }, delay);
+      }
+      function pause() {
+        isPlaying = false;
+        playBtn.textContent = "Play";
+        if (timer) clearInterval(timer);
+      }
+      function togglePlay() {
+        if (isPlaying) pause();
+        else {
+          if (currentStep >= steps.length - 1) currentStep = 0;
+          play();
+        }
+      }
+      function stepForward() {
+        pause();
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          renderStep();
+        }
+      }
+      function stepBack() {
+        pause();
+        if (currentStep > 0) {
+          currentStep--;
+          renderStep();
+        }
+      }
+      function updateSpeed() {
+        if (isPlaying) {
+          pause();
+          play();
+        }
+      }
+
+      selectCategory("ll");
+    </script>
+  </body>
+</html>
