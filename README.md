@@ -117,6 +117,25 @@ flowchart LR
 > [!TIP]
 > Once the server starts, open **`http://localhost:8080`** in your browser to launch the DSA Visualizer.
 
+## 📸 Demo & Screenshots
+
+### 🎬 Live Playback Demo
+![DSA Visualizer Live Demo](assets/demo.gif)
+*Real-time C++ execution trace visualized with step-by-step playback controls.*
+
+### 🖥️ Interface Gallery
+
+| Sorting & Array Bars | Binary Search Tree (BST) |
+| :---: | :---: |
+| ![Sorting Visualizer](assets/sorting.png) | ![BST Visualizer](assets/tree.png) |
+| **Quick Sort** with live comparison & swap highlights | **BST Insertion & Traversal** with dynamic `(x, y)` node layout |
+
+| Doubly Circular Linked List | Dark Mode & Complexity Drawer |
+| :---: | :---: |
+| ![Linked List Visualizer](assets/linked-list.png) | ![Concept and Complexity](assets/dark-mode.png) |
+| Pointer-level node traversal & insertion | Built-in **Time/Space Complexity** notes & theme toggle |
+
+
 ## 🎮 How to Use
 
 1. **Pick a Category & Sub-Type:** Use the top navbar (**Array**, **Graph**, **Tree**, **Linked List**, **Queue**) and click any sub-type pill underneath.
